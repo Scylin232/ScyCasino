@@ -1,0 +1,123 @@
+---
+
+services:
+  # Authentik:
+  authentik-postgresql:
+    image: docker.io/library/postgres:16-alpine
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      start_period: 20s
+      interval: 30s
+      retries: 5
+      timeout: 5s
+    volumes:
+      - authentik-database-volume:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: ${PG_PASS:?database password required}
+      POSTGRES_USER: ${PG_USER:-authentik}
+      POSTGRES_DB: ${PG_DB:-authentik}
+    env_file:
+      - .env
+  authentik-redis:
+    image: docker.io/library/redis:alpine
+    command: --save 60 1 --loglevel warning
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      start_period: 20s
+      interval: 30s
+      retries: 5
+      timeout: 3s
+    volumes:
+      - authentik-redis-volume:/data
+  authentik-server:
+    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2024.12.1}
+    restart: unless-stopped
+    command: server
+    environment:
+      AUTHENTIK_REDIS__HOST: authentik-redis
+      AUTHENTIK_POSTGRESQL__HOST: authentik-postgresql
+      AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
+      AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
+    volumes:
+      - ./ScyCasino.Backend.Authentik/media:/media
+      - ./ScyCasino.Backend.Authentik/custom-templates:/templates
+    env_file:
+      - .env
+    ports:
+      - "${COMPOSE_PORT_HTTP:-9000}:9000"
+      - "${COMPOSE_PORT_HTTPS:-9443}:9443"
+    depends_on:
+      authentik-postgresql:
+        condition: service_healthy
+      authentik-redis:
+        condition: service_healthy
+  authentik-worker:
+    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2024.12.1}
+    restart: unless-stopped
+    command: worker
+    environment:
+      AUTHENTIK_REDIS__HOST: authentik-redis
+      AUTHENTIK_POSTGRESQL__HOST: authentik-postgresql
+      AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
+      AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
+    user: root
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./ScyCasino.Backend.Authentik/media:/media
+      - ./ScyCasino.Backend.Authentik/certs:/certs
+      - ./ScyCasino.Backend.Authentik/custom-templates:/templates
+      - ./ScyCasino.Backend.Authentik/blueprints/example/applications.yaml:/blueprints/example/applications.yaml
+      - ./ScyCasino.Backend.Authentik/blueprints/example/enrollments.yaml:/blueprints/example/enrollments.yaml
+    env_file:
+      - .env
+    depends_on:
+      authentik-postgresql:
+        condition: service_healthy
+      authentik-redis:
+        condition: service_healthy
+  # Backend Services:
+  user-postgresql:
+    image: postgres:16.1
+    container_name: user-database
+    environment:
+      POSTGRES_DB: UserDatabase
+      POSTGRES_USER: UserLogin
+      POSTGRES_PASSWORD: UserPassword
+      PGDATA: /data/postgres
+      PGPORT: 7230
+    volumes:
+      - user-database-volume:/data/postgres
+    ports:
+      - "7230:7230"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
+      start_period: 20s
+      interval: 30s
+      retries: 5
+      timeout: 5s
+  user-service:
+    build:
+      context: ./ScyCasino.Backend.User/
+      dockerfile: Dockerfile
+    container_name: user-service
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:7231
+      CONNECTION_STRING_DEVELOPMENT: Host=user-database;Port=7230;Database=UserDatabase;Username=UserLogin;Password=UserPassword;IncludeErrorDetail=true;
+    ports:
+      - "7231:7231"
+    depends_on:
+      user-postgresql:
+        condition: service_healthy
+
+volumes:
+  authentik-database-volume:
+    driver: local
+  authentik-redis-volume:
+    driver: local
+  user-database-volume:
+    driver: local

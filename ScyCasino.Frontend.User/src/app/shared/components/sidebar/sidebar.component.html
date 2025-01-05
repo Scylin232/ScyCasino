@@ -1,0 +1,90 @@
+<div>
+    <!-- Mobile Sidebar -->
+    <div class="relative z-50 lg:hidden {{ mobileSidebarEnabled ? '' : 'hidden' }}" role="dialog" aria-modal="true">
+        <div class="fixed inset-0 bg-gray-900/80" aria-hidden="true"></div>
+
+        <div class="fixed inset-0 flex">
+            <div class="relative mr-16 flex w-full max-w-xs flex-1">
+                <div class="absolute left-full top-0 flex w-16 justify-center pt-5">
+                    <button type="button" class="-m-2.5 p-2.5" (click)="toggleMobileSidebar()">
+                        <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="flex grow flex-col overflow-y-auto bg-white px-6 pb-2">
+                    <div class="flex h-24 shrink-0 items-center">
+                        <img class="h-auto w-auto" ngSrc="/images/logo.png" width="512" height="110" alt="Logo">
+                    </div>
+                    <nav class="flex flex-1 flex-col">
+                        <ul role="list" class="space-y-1">
+                            <li *ngFor="let navigation of navigations;">
+                                <a routerLink="{{ navigation.route }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 {{ router.url === navigation.route ? 'bg-gray-50 text-red-600' : ''}} hover:bg-gray-50">
+                                    <ng-icon size="1.5rem" [svg]="navigation.icon" />
+                                    {{ navigation.name }}
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Desktop Sidebar -->
+    <div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
+        <div class="flex grow flex-col overflow-y-auto border-r border-gray-200 bg-white px-6">
+            <div class="flex h-24 shrink-0 items-center">
+                <img class="h-auto w-auto" ngSrc="/images/logo.png" width="512" height="110" alt="Logo">
+            </div>
+            <nav class="flex flex-1 flex-col">
+                <ul role="list" class="flex flex-1 flex-col gap-y-7">
+                    <li>
+                        <ul role="list" class="-mx-2 space-y-1">
+                            <li *ngFor="let navigation of navigations;">
+                                <a routerLink="{{ navigation.route }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 {{ router.url === navigation.route ? 'bg-gray-50 text-red-600' : ''}} hover:bg-gray-50">
+                                    <ng-icon size="1.5rem" [svg]="navigation.icon" />
+                                    {{ navigation.name }}
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="-mx-6 mt-auto">
+                        <button
+                                class="flex w-full items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
+                                (click)="authService.isLoggedIn ? authService.logout() : authService.login()"
+                        >
+                            <img class="h-8 w-8 rounded-full bg-gray-50"
+                                 [ngSrc]="authService.isLoggedIn ? authService.claims.picture : ''"
+                                 height="64"
+                                 width="64"
+                                 alt="">
+                            <span aria-hidden="true">{{ authService.isLoggedIn ? authService.claims.given_name : 'Login' }}</span>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Mobile Sidebar Toggle -->
+    <div class="sticky top-0 z-40 flex items-center gap-x-6 bg-white px-4 py-4 shadow-sm sm:px-6 lg:hidden">
+        <button type="button" class="-m-2.5 p-2.5 text-gray-700 lg:hidden" (click)="toggleMobileSidebar()">
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+            </svg>
+        </button>
+        <div class="flex-1 text-sm font-semibold leading-6 text-gray-900"></div>
+        <a href="#">
+            <img class="h-8 w-8 rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
+        </a>
+    </div>
+
+    <!-- Layout -->
+    <main class="py-10 lg:pl-72">
+        <div class="px-4 sm:px-6 lg:px-8">
+            <ng-content></ng-content>
+        </div>
+    </main>
+</div>

@@ -1,0 +1,42 @@
+<div class="px-4 sm:px-6 lg:px-8">
+  <div class="sm:flex sm:items-center">
+    <div class="sm:flex-auto">
+      <h1 class="text-base font-semibold leading-6 text-gray-900">{{ title }}</h1>
+      <p class="mt-2 text-sm text-gray-700">{{ description }}</p>
+    </div>
+  </div>
+
+  <div class="mt-8 flow-root">
+    <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+      <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+        <table class="min-w-full divide-y divide-gray-300">
+          <thead>
+          <tr>
+            <th *ngFor="let entryMapping of entryMappings; index as i;" scope="col" class="{{ i == 0 ? 'py-3.5 pl-4 pr-3' : 'px-3 py-3.5' }} text-left text-sm font-semibold text-gray-900">
+              {{ entryMapping.name }}
+            </th>
+          </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+          <tr *ngFor="let entry of entries;">
+            <td *ngFor="let entryMapping of entryMappings; index as i;" class="{{ i == 0 ? 'pl-4 pr-3' : 'px-3' }} whitespace-nowrap py-4 text-sm text-gray-500">
+              {{ entry[entryMapping.key] }}
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <app-pagination
+    [totalPages]="totalPages"
+    [totalCount]="totalCount"
+
+    [currentPage]="currentPage"
+    [currentCount]="currentCount"
+
+    (pageChange)="onPageChange($event)"
+    (countChange)="onCountChange($event)"
+  />
+</div>

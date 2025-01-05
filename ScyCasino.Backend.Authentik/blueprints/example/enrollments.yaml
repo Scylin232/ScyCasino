@@ -1,0 +1,72 @@
+version: 1
+metadata:
+  name: Init - ScyCasino - Enrollments
+entries:
+  # Groups (Roles)
+  - model: authentik_core.group
+    id: scycasino-group-member
+    identifiers:
+      name: ScyCasino Member
+
+  - model: authentik_core.group
+    id: scycasino-group-administrator
+    identifiers:
+      name: ScyCasino Administrator
+  
+  # Enrollments
+  - model: authentik_flows.flow
+    id: enrollment-flow
+    identifiers:
+      slug: default-enrollment-flow
+    attrs:
+      name: main-page-enrollment
+      title: enrollment
+      designation: enrollment
+  
+  - model: authentik_stages_prompt.promptstage
+    id: source-enrollment-prompt
+    identifiers:
+      name: source-enrollment-prompt
+    attrs:
+      name: default-source-enrollment-prompt
+      fields:
+        - !Find [ authentik_stages_prompt.prompt, [ name, 'default-source-enrollment-field-username' ] ]
+        - !Find [ authentik_stages_prompt.prompt, [ name, 'default-user-settings-field-email' ] ]
+        - !Find [ authentik_stages_prompt.prompt, [ name, 'default-user-settings-field-name' ] ]
+        - !Find [ authentik_stages_prompt.prompt, [ name, 'initial-setup-field-password' ] ]
+        - !Find [ authentik_stages_prompt.prompt, [ name, 'initial-setup-field-password-repeat' ] ]
+  
+  - model: authentik_stages_user_write.userwritestage
+    id: source-enrollment-write
+    identifiers:
+      name: source-enrollment-write
+    attrs:
+      create_users_group: !KeyOf scycasino-group-member
+      name: default-source-enrollment-write
+      user_creation_mode: always_create
+      user_type: external
+  
+  - model: authentik_flows.flowstagebinding
+    identifiers:
+      order: 10
+      stage: !KeyOf source-enrollment-prompt
+      target: !KeyOf enrollment-flow
+  - model: authentik_flows.flowstagebinding
+    identifiers:
+      order: 20
+      stage: !KeyOf source-enrollment-write
+      target: !KeyOf enrollment-flow
+  
+  - model: authentik_stages_identification.identificationstage
+    id: default-authentication-identification
+    identifiers:
+      name: default-authentication-identification
+    attrs:
+      case_insensitive_matching: true
+      enrollment_flow: !KeyOf enrollment-flow
+      name: default-authentication-identification
+      pretend_user_exists: true
+      show_matched_user: true
+      user_fields:
+        - username
+        - email
