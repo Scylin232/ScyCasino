@@ -113,6 +113,32 @@ services:
     depends_on:
       user-postgresql:
         condition: service_healthy
+  room-redis:
+    image: docker.io/library/redis:alpine
+    command: --save 60 1 --loglevel warning
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli ping | grep PONG" ]
+      start_period: 20s
+      interval: 30s
+      retries: 5
+      timeout: 3s
+    volumes:
+      - room-redis-volume:/data
+  room-service:
+    build:
+      context: ./ScyCasino.Backend.Room/
+      dockerfile: Dockerfile
+    container_name: room-service
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8231
+      REDIS_CONNECTION_STRING: room-redis
+    ports:
+      - "8231:8231"
+    depends_on:
+      room-redis:
+        condition: service_healthy
 
 volumes:
   authentik-database-volume:
@@ -120,4 +146,6 @@ volumes:
   authentik-redis-volume:
     driver: local
   user-database-volume:
+    driver: local
+  room-redis-volume:
     driver: local

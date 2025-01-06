@@ -18,6 +18,7 @@
     "@angular/platform-browser": "^19.0.0",
     "@angular/platform-browser-dynamic": "^19.0.0",
     "@angular/router": "^19.0.0",
+    "@microsoft/signalr": "^8.0.7",
     "@ng-icons/core": "^30.2.0",
     "@ng-icons/heroicons": "^30.2.0",
     "angular-oauth2-oidc": "^19.0.0",

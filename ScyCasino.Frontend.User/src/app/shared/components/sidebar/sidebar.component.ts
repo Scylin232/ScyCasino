@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { NgForOf, NgOptimizedImage } from "@angular/common";
-import {Router, RouterLink} from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import { heroHome, heroCircleStack, heroTableCells } from '@ng-icons/heroicons/outline';
 
@@ -32,8 +32,8 @@ export class SidebarComponent {
       icon: heroHome,
     },
     {
-      name: "Roulette",
-      route: "/roulette",
+      name: "Rooms",
+      route: "/rooms",
       icon: heroCircleStack,
     },
     {

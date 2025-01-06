@@ -17,7 +17,7 @@ export class AuthService {
     issuer: environment.authIssuer,
     redirectUri: environment.authRedirectUri,
     clientId: "scycasino-auth-client-id",
-    scope: "openid profile email offline_access",
+    scope: "openid offline_access resource",
     responseType: "code",
     strictDiscoveryDocumentValidation: false,
   };
@@ -40,6 +40,10 @@ export class AuthService {
 
   public get claims(): ClaimModel {
     return this.oauthService.getIdentityClaims() as ClaimModel;
+  }
+
+  public get accessToken(): string {
+    return this.oauthService.getAccessToken();
   }
 
   private configureAuth(): void {

@@ -10,7 +10,7 @@ namespace Infrastructure.Repositories;
 public abstract class EntityFrameworkRepository<T>(DataContext dataContext) : IGenericRepository<T>
     where T : Entity
 {
-     public async Task<PaginatedResult<T>> GetAll(GetAllContext context)
+    public async Task<PaginatedResult<T>> GetAll(GetAllContext context)
     {
         IQueryable<T> entitiesQuery = dataContext.Set<T>().AsNoTracking();
         
