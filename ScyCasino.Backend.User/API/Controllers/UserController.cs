@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Application.CQRS.User.Queries;
 using Application.CQRS.User.Commands;
 using Domain.Models;
-using SharedKernel.Core;
+using Shared.Kernel.Core;
 
 namespace API.Controllers;
 
@@ -19,7 +19,7 @@ public class UserController(ISender sender) : ControllerBase
         GetUserFromClaimsQuery query = new(User.Claims);
         
         Result<User> result = await sender.Send(query);
-
+        
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
     

@@ -57,6 +57,6 @@ app.UseInfrastructure();
 app.UseCors("AllowSpecificOrigin");
 
 app.MapControllers();
-app.MapHub<RoomHub>("/room-hub");
+app.MapHub<RoomHub>("/hub/room");
 
 app.Run();

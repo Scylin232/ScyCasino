@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Application.CQRS.Room.Commands;
 using Application.CQRS.Room.Queries;
 using Domain.Models;
-using SharedKernel.Core;
+using Shared.Kernel.Core;
 
 namespace API.Controllers;
 

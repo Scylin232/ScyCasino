@@ -1,5 +1,5 @@
-﻿using Application.Abstractions.Messaging;
-using SharedKernel.Core;
+﻿using Shared.Application.Abstractions.Messaging;
+using Shared.Kernel.Core;
 
 namespace Application.CQRS.Room.Queries;
 

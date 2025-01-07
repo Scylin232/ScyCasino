@@ -1,4 +1,4 @@
-﻿using SharedKernel.Domain;
+﻿using Shared.Kernel.Domain;
 
 namespace Domain.Models;
 

@@ -1,7 +1,7 @@
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { provideOAuthClient } from 'angular-oauth2-oidc';
+import { provideOAuthClient, OAuthStorage } from 'angular-oauth2-oidc';
 
 import { routes } from './app.routes';
 import { authInterceptor } from './core/auth/auth-interceptor';
@@ -17,9 +17,13 @@ export const appConfig: ApplicationConfig = {
     ),
     provideOAuthClient({
       resourceServer: {
-        allowedUrls: [environment.apiUrl],
+        allowedUrls: [environment.apiUrl, "http://localhost:9231"],
         sendAccessToken: true,
       }
     }),
+    {
+      provide: OAuthStorage,
+      useFactory: (): OAuthStorage => localStorage,
+    }
   ]
 };

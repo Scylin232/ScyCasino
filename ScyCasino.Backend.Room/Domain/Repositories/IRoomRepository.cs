@@ -1,11 +1,11 @@
 ﻿using Domain.Models;
-using SharedKernel.Repositories;
+using Shared.Kernel.Repositories;
 
 namespace Domain.Repositories;
 
 public interface IRoomRepository : IGenericRepository<Room>
 {
-    Task AddPlayer(Room room, Guid userId);
-    Task RemovePlayer(Room room, Guid userId);
-    Task<IEnumerable<Room>> RemovePlayerFromAllRooms(Guid userId);
+    Task AddPlayerConnection(Room room, Guid userId, string connectionId);
+    Task RemovePlayerConnection(Room room, string connectionId);
+    Task<IEnumerable<Room>> RemovePlayerConnectionFromAllRooms(string connectionId);
 };

@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using Application.Abstractions.Messaging;
+using Shared.Application.Abstractions.Messaging;
 using Application.Events;
 using Domain.Repositories;
 using Domain.Services;
-using SharedKernel.Core;
-using SharedKernel.Repositories;
+using Shared.Kernel.Core;
+using Shared.Kernel.Repositories;
 
 namespace Application.CQRS.Room.Commands;
 
@@ -22,7 +22,10 @@ public sealed class JoinUserToRoomCommandHandler(IRoomRepository roomRepository,
         if (userId is null)
             return Result.Failure<Domain.Models.Room>(Error.NotFound);
         
-        await roomRepository.AddPlayer(room, userId.Value);
+        if (room.PlayerConnections.ContainsValue(userId.Value) || room.PlayerConnections.ContainsKey(request.ConnectionId))
+            return Result.Failure<Domain.Models.Room>(Error.ConditionNotMet);
+        
+        await roomRepository.AddPlayerConnection(room, userId.Value, request.ConnectionId);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         
         return Result.Success(room);

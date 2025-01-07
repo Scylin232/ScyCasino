@@ -1,6 +1,6 @@
 import {Observable, Subscriber} from 'rxjs';
 import {inject, Injectable} from '@angular/core';
-import {HubConnection, HubConnectionBuilder} from '@microsoft/signalr'
+import {HttpTransportType, HubConnection, HubConnectionBuilder} from '@microsoft/signalr'
 
 import {AuthService} from '../auth/auth.service';
 
@@ -10,13 +10,14 @@ import {environment} from '../../../environments/environment';
   providedIn: 'root',
 })
 export class RoomService {
-  private hubConnection: HubConnection;
+  private hubConnection!: HubConnection;
   private authService: AuthService = inject(AuthService);
 
-  constructor() {
+  public initializeConnection(roomId: string): void {
     this.hubConnection = new HubConnectionBuilder()
-      .withUrl(`${environment.apiUrl}/room-hub`, {
-        withCredentials: false,
+      .withUrl(`${environment.apiUrl}/hub/room?roomId=${encodeURIComponent(roomId)}`, {
+        skipNegotiation: true,
+        transport: HttpTransportType.WebSockets,
         accessTokenFactory: (): string => this.authService.accessToken
       })
       .build();
@@ -33,6 +34,20 @@ export class RoomService {
         .catch((error: any): void => {
           observer.error(error);
         });
+    });
+  }
+
+  public stopConnection(): Observable<void> {
+    return new Observable<void>((observer: Subscriber<void>): void => {
+      this.hubConnection
+        .stop()
+        .then((): void => {
+          observer.next();
+          observer.complete();
+        })
+        .catch((error: any): void => {
+          observer.error(error);
+        })
     });
   }
 

@@ -1,8 +1,8 @@
 ﻿using System.Security.Claims;
-using Application.Abstractions.Messaging;
+using Shared.Application.Abstractions.Messaging;
 using Application.Utilities.User;
 using Domain.Repositories;
-using SharedKernel.Core;
+using Shared.Kernel.Core;
 
 namespace Application.CQRS.User.Queries;
 

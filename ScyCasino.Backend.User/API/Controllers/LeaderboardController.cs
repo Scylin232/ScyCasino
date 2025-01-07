@@ -1,7 +1,7 @@
 using Application.CQRS.User.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SharedKernel.Core;
+using Shared.Kernel.Core;
 
 namespace API.Controllers;
 

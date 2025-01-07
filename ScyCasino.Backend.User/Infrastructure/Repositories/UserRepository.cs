@@ -2,6 +2,7 @@
 using Domain.Models;
 using Domain.Repositories;
 using Infrastructure.Data;
+using Shared.Infrastructure.Repositories;
 
 namespace Infrastructure.Repositories;
 

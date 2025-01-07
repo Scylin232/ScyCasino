@@ -1,4 +1,4 @@
-﻿using Application.Abstractions.Messaging;
+﻿using Shared.Application.Abstractions.Messaging;
 
 namespace Application.CQRS.User.Queries;
 

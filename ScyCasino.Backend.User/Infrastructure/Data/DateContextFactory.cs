@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Shared.Infrastructure.Data;
 
 namespace Infrastructure.Data;
 

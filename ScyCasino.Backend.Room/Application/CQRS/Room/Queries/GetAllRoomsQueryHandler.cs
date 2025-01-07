@@ -1,6 +1,6 @@
-﻿using Application.Abstractions.Messaging;
-using Domain.Repositories;
-using SharedKernel.Core;
+﻿using Domain.Repositories;
+using Shared.Application.Abstractions.Messaging;
+using Shared.Kernel.Core;
 
 namespace Application.CQRS.Room.Queries;
 

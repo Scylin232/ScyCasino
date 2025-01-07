@@ -1,5 +1,5 @@
 ﻿using Domain.Models;
-using SharedKernel.Repositories;
+using Shared.Kernel.Repositories;
 
 namespace Domain.Repositories;
 

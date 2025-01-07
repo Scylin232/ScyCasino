@@ -5,11 +5,12 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
+COPY "Packages/Shared.1.0.7.nupkg" "/src/"
 COPY ["API/API.csproj", "API/"]
 COPY ["Application/Application.csproj", "Application/"]
-COPY ["SharedKernel/SharedKernel.csproj", "SharedKernel/"]
 COPY ["Domain/Domain.csproj", "Domain/"]
 COPY ["Infrastructure/Infrastructure.csproj", "Infrastructure/"]
+RUN dotnet nuget add source /src/ --name LocalPackages
 RUN dotnet restore "API/API.csproj"
 COPY . .
 WORKDIR "/src/API"

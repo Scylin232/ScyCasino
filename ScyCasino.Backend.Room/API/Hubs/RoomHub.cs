@@ -1,24 +1,22 @@
-﻿using System.Collections;
-using Application.CQRS.Room.Commands;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;using Application.CQRS.Room.Commands;
 using Application.Events;
 using Domain.Models;
-using MediatR;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.SignalR;
-using SharedKernel.Core;
+using Shared.Kernel.Core;
 
 namespace API.Hubs;
 
 public class RoomHub(ISender sender) : Hub
 {
-    [Authorize]
-    public async Task JoinRoom(Guid roomId)
+    public override async Task OnConnectedAsync()
     {
         string? accessToken = Context.GetHttpContext()?.Request.Query["access_token"];
+        string? roomId = Context.GetHttpContext()?.Request.Query["roomId"];
         
-        if (string.IsNullOrEmpty(accessToken)) return;
+        if (string.IsNullOrEmpty(accessToken) || string.IsNullOrEmpty(roomId)) return;
         
-        JoinUserToRoomCommand command = new(roomId, accessToken);
+        JoinUserToRoomCommand command = new(Guid.Parse(roomId), accessToken, Context.ConnectionId);
         Result<Room> result = await sender.Send(command);
         
         if (result.IsFailure) return;
@@ -29,16 +27,12 @@ public class RoomHub(ISender sender) : Hub
         
         await Clients
             .Group(updatedRoom.Id.ToString())
-            .SendAsync(EventNames.PlayerListUpdated, updatedRoom.Players);
+            .SendAsync(EventNames.PlayerListUpdated, updatedRoom.PlayerConnections.Values);
     }
     
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
-        string? accessToken = Context.GetHttpContext()?.Request.Query["access_token"];
-        
-        if (string.IsNullOrEmpty(accessToken)) return;
-        
-        DisconnectUserFromAllRoomsCommand command = new(accessToken);
+        DisconnectUserFromAllRoomsByConnectionIdCommand command = new(Context.ConnectionId);
         Result<IEnumerable<Room>> result = await sender.Send(command);
         
         if (result.IsFailure) return;
@@ -49,7 +43,7 @@ public class RoomHub(ISender sender) : Hub
             
             await Clients
                 .Group(affectedRoom.Id.ToString())
-                .SendAsync(EventNames.PlayerListUpdated, affectedRoom.Players);
+                .SendAsync(EventNames.PlayerListUpdated, affectedRoom.PlayerConnections.Values);
         }
     }
 }

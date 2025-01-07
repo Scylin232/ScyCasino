@@ -1,8 +1,0 @@
-﻿namespace SharedKernel.Core;
-
-public class PaginatedResult<T>
-{
-    public required int TotalPages { get; set; }
-    public required int TotalCount { get; set; }
-    public required IEnumerable<T> Results { get; set; }
-}

@@ -79,6 +79,17 @@ services:
         condition: service_healthy
       authentik-redis:
         condition: service_healthy
+  # Message Broker:
+  rabbitmq:
+    image: masstransit/rabbitmq:latest
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 3
+    ports:
+      - "5672:5672"
+      - "15672:15672"
   # Backend Services:
   user-postgresql:
     image: postgres:16.1
@@ -108,10 +119,15 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:7231
       CONNECTION_STRING_DEVELOPMENT: Host=user-database;Port=7230;Database=UserDatabase;Username=UserLogin;Password=UserPassword;IncludeErrorDetail=true;
+      RABBITMQ_HOST: amqp://rabbitmq
+      RABBITMQ_USERNAME: guest
+      RABBITMQ_PASSWORD: guest
     ports:
       - "7231:7231"
     depends_on:
       user-postgresql:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
   room-redis:
     image: docker.io/library/redis:alpine
@@ -134,10 +150,31 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:8231
       REDIS_CONNECTION_STRING: room-redis
+      RABBITMQ_HOST: amqp://rabbitmq
+      RABBITMQ_USERNAME: guest
+      RABBITMQ_PASSWORD: guest
     ports:
       - "8231:8231"
     depends_on:
       room-redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+  roulette-service:
+    build:
+      context: ./ScyCasino.Backend.Roulette/
+      dockerfile: Dockerfile
+    container_name: roulette-service
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:9231
+      RABBITMQ_HOST: amqp://rabbitmq
+      RABBITMQ_USERNAME: guest
+      RABBITMQ_PASSWORD: guest
+    ports:
+      - "9231:9231"
+    depends_on:
+      rabbitmq:
         condition: service_healthy
 
 volumes:
