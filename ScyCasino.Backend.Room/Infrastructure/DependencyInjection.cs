@@ -1,4 +1,5 @@
-﻿using Application.Consumers.Room;
+﻿using Application.Activities.Room;
+using Application.Consumers.Roulette;
 using Domain.Repositories;
 using Domain.Services;
 using Infrastructure.Repositories;
@@ -6,6 +7,8 @@ using Infrastructure.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Shared.Application.Contracts.Requests.Room;
+using Shared.Application.Events.Roulette;
 using Shared.Infrastructure;
 
 namespace Infrastructure;
@@ -18,7 +21,11 @@ public static class DependencyInjection
         serviceCollection.AddRedisStorage();
         serviceCollection.AddDistributedCommunication(options =>
         {
-            options.AddConsumer<ValidateUserRoomConsumer>();
+            options.AddConsumer<RouletteGameStateUpdatedEventConsumer>();
+            options.AddConsumer<RouletteGameStateClearedEventConsumer>();
+            options.AddConsumer<RouletteBetsCollectedEventConsumer>();
+            
+            options.AddExecuteActivity<ValidateUserRoomActivity, ValidateUserRoomContract>();
         });
         
         serviceCollection.AddSignalR(options => { 

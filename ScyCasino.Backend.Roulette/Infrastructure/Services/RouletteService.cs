@@ -66,7 +66,7 @@ public class RouletteService : IRouletteService
     
     private static bool IsStraight(int[] values)
     {
-        return values.Length == 1 && IsValidValues(values);
+        return values.Length == 1 && (IsValidValues(values) || values[0] == 0);
     }
     
     private static bool IsSplit(int[] values)

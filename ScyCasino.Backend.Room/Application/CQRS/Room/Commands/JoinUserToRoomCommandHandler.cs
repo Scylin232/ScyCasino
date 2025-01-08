@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.SignalR;
-using Shared.Application.Abstractions.Messaging;
-using Application.Events;
+﻿using Shared.Application.Abstractions.Messaging;
 using Domain.Repositories;
 using Domain.Services;
 using Shared.Kernel.Core;

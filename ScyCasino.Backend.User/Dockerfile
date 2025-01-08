@@ -5,7 +5,7 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-COPY "Packages/Shared.1.0.7.nupkg" "/src/"
+COPY "Packages/Shared.1.0.25.nupkg" "/src/"
 COPY ["API/API.csproj", "API/"]
 COPY ["Application/Application.csproj", "Application/"]
 COPY ["Domain/Domain.csproj", "Domain/"]

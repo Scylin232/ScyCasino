@@ -21,7 +21,7 @@ public static class DependencyInjection
         
         serviceCollection.AddMassTransit(options =>
         {
-            transitOptions?.Invoke(options);
+            options.SetKebabCaseEndpointNameFormatter();
             
             options.UsingRabbitMq((context, config) =>
             {
@@ -33,6 +33,8 @@ public static class DependencyInjection
                 
                 config.ConfigureEndpoints(context);
             });
+            
+            transitOptions?.Invoke(options);
         });
         
         return serviceCollection;
@@ -73,7 +75,7 @@ public static class DependencyInjection
                         
                         PathString path = context.HttpContext.Request.Path;
                         
-                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hub/"))
+                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/room-hub"))
                             context.Token = accessToken;
                         
                         return Task.CompletedTask;

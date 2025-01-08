@@ -5,12 +5,8 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>1.0.7</Version>
+        <Version>1.0.25</Version>
     </PropertyGroup>
-
-    <ItemGroup>
-      <Folder Include="Application\Contracts\Requests\" />
-    </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="MediatR" Version="12.4.1" />

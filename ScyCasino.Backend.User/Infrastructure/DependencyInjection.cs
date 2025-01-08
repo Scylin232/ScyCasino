@@ -1,4 +1,4 @@
-﻿using Application.Consumers.User;
+﻿using Application.Activities.User;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Domain.Repositories;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
+using Shared.Application.Contracts.Requests.User;
 using Shared.Infrastructure;
 
 namespace Infrastructure;
@@ -21,7 +22,9 @@ public static class DependencyInjection
         });
         serviceCollection.AddDistributedCommunication(options =>
         {
-            options.AddConsumer<ValidateAccessTokenConsumer>();
+            options.AddExecuteActivity<ValidateAccessTokenActivity, ValidateAccessTokenContract>();
+            options.AddActivity<ConsumeCoinsActivity, ConsumeCoinsContract, ConsumeCoinsLog>();
+            options.AddActivity<MultiAddCoinsActivity, MultiAddCoinsContract, MultiAddCoinsLog>();
         });
         
         serviceCollection.AddScoped<IUserRepository, UserRepository>();

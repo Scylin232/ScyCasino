@@ -28,6 +28,14 @@ export class RoomRouletteComponent implements OnInit, OnDestroy {
         this.roomService.eventReceived("PlayerListUpdated").subscribe((updatedPlayerList: string): void => {
           console.log("Updated Player List: ", updatedPlayerList);
         });
+
+        this.roomService.eventReceived("GameStateUpdated").subscribe((updatedGameState: string): void => {
+          console.log("Updated Game State: ", JSON.parse(updatedGameState));
+        });
+        
+        this.roomService.eventReceived("RoundEnded").subscribe((roundEndInfo: string): void => {
+          console.log(roundEndInfo);
+        });
       });
   }
 

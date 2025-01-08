@@ -1,12 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Shared.Domain.Models.Room;
 using Shared.Kernel.Domain;
 
 namespace Domain.Models;
-
-public enum RoomType
-{
-    RouletteRoom
-}
 
 public sealed class Room(Guid id) : Entity(id)
 {

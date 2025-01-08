@@ -1,6 +1,8 @@
 ﻿using System.Text.Json;
 using Domain.Models;
 using Domain.Repositories;
+using Shared.Application.Abstractions.Messaging;
+using Shared.Domain.Models.Room;
 using Shared.Infrastructure.Data;
 using Shared.Infrastructure.Repositories;
 using StackExchange.Redis;
@@ -48,5 +50,28 @@ public class RoomRepository(RedisUnitOfWork unitOfWork) : RedisRepository<Room>(
         }
         
         return affectedRooms;
+    }
+
+    public async Task<List<Room>> GetAllRoomsOfType(RoomType roomType)
+    {
+        IDatabase database = _unitOfWork.ConnectionMultiplexer.GetDatabase();
+        RedisValue[] keys = await database.SetMembersAsync(CollectionKey);
+        
+        List<Room> rooms = new();
+
+        foreach (RedisValue key in keys)
+        {
+            RedisValue value = await database.StringGetAsync(new RedisKey(key));
+            
+            if (value.IsNullOrEmpty) continue;
+            
+            Room? room = JsonSerializer.Deserialize<Room>(value!);
+            
+            if (room is null || room.RoomType != roomType) continue;
+            
+            rooms.Add(room);
+        }
+        
+        return rooms;
     }
 }

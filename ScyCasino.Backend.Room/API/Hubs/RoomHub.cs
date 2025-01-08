@@ -7,6 +7,7 @@ using Shared.Kernel.Core;
 
 namespace API.Hubs;
 
+[Authorize]
 public class RoomHub(ISender sender) : Hub
 {
     public override async Task OnConnectedAsync()

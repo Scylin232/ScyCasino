@@ -160,6 +160,25 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
+  roulette-database:
+    image: postgres:16.1
+    container_name: roulette-database
+    environment:
+      POSTGRES_DB: RouletteDatabase
+      POSTGRES_USER: RouletteLogin
+      POSTGRES_PASSWORD: RoulettePassword
+      PGDATA: /data/postgres
+      PGPORT: 9230
+    volumes:
+      - roulette-database-volume:/data/postgres
+    ports:
+      - "9230:9230"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
+      start_period: 20s
+      interval: 30s
+      retries: 5
+      timeout: 5s
   roulette-service:
     build:
       context: ./ScyCasino.Backend.Roulette/
@@ -171,9 +190,12 @@ services:
       RABBITMQ_HOST: amqp://rabbitmq
       RABBITMQ_USERNAME: guest
       RABBITMQ_PASSWORD: guest
+      CONNECTION_STRING_DEVELOPMENT: Host=roulette-database;Port=9230;Database=RouletteDatabase;Username=RouletteLogin;Password=RoulettePassword;IncludeErrorDetail=true;
     ports:
       - "9231:9231"
     depends_on:
+      roulette-database:
+        condition: service_healthy
       rabbitmq:
         condition: service_healthy
 
@@ -185,4 +207,6 @@ volumes:
   user-database-volume:
     driver: local
   room-redis-volume:
+    driver: local
+  roulette-database-volume:
     driver: local

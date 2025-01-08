@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Application.Jobs;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Application;
 
@@ -11,6 +12,7 @@ public static class DependencyInjection
         Assembly assembly = typeof(DependencyInjection).Assembly;
         
         serviceCollection.AddMediatR(assembly);
+        serviceCollection.AddHostedService<RouletteBetCollectorTask>();
         
         return serviceCollection;
     }

@@ -11,4 +11,5 @@ public class RouletteBet(Guid id) : Entity(id)
     public int[] BetValues { get; set; }
     
     public bool IsWinner { get; set; }
+    public bool Handled { get; set; }
 }

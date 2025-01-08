@@ -1,5 +1,7 @@
 using API.Hubs;
+using API.Services;
 using Application;
+using Domain.Services;
 using Infrastructure;
 using Microsoft.OpenApi.Models;
 
@@ -7,6 +9,7 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddSingleton<IGameStateNotificationService, GameStateNotificationService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -57,6 +60,6 @@ app.UseInfrastructure();
 app.UseCors("AllowSpecificOrigin");
 
 app.MapControllers();
-app.MapHub<RoomHub>("/hub/room");
+app.MapHub<RoomHub>("/room-hub");
 
 app.Run();

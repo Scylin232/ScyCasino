@@ -15,7 +15,7 @@ export class RoomService {
 
   public initializeConnection(roomId: string): void {
     this.hubConnection = new HubConnectionBuilder()
-      .withUrl(`${environment.apiUrl}/hub/room?roomId=${encodeURIComponent(roomId)}`, {
+      .withUrl(`${environment.apiUrl}/room-hub?roomId=${encodeURIComponent(roomId)}`, {
         skipNegotiation: true,
         transport: HttpTransportType.WebSockets,
         accessTokenFactory: (): string => this.authService.accessToken
