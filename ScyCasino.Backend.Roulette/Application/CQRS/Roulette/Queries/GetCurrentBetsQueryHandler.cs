@@ -1,6 +1,5 @@
 ﻿using Domain.Models;
 using Domain.Repositories;
-using MassTransit.Initializers;
 using Shared.Application.Abstractions.Messaging;
 using Shared.Application.Events.Roulette;
 using Shared.Kernel.Core;

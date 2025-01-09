@@ -1,0 +1,21 @@
+<ul role="list" class="mt-4 grid grid-cols-1 gap-x-6 gap-y-8 lg:grid-cols-3 xl:gap-x-8">
+  <li *ngFor="let rouletteBet of rouletteBets" class="overflow-hidden rounded-xl border border-gray-200">
+    <div class="flex items-center gap-x-4 border-b border-gray-900/5 bg-gray-50 p-6">
+      <div class="h-12 w-12 flex-none rounded-lg object-cover ring-1 ring-gray-900/10" style="background-color: {{ getColorFromUserId(rouletteBet.userId) }}"></div>
+      <div class="text-sm font-medium leading-6 text-gray-900">Roulette Bet</div>
+    </div>
+
+    <dl class="-my-3 divide-y divide-gray-100 px-6 py-4 text-sm leading-6">
+      <div class="flex justify-between gap-x-4 py-3">
+        <dt class="text-gray-500">Type</dt>
+        <dd class="text-gray-700">{{ RouletteBetType[rouletteBet.rouletteBetType] }} {{ rouletteBet.betValues.length <= 12 ? rouletteBet.betValues : "" }}</dd>
+      </div>
+      <div class="flex justify-between gap-x-4 py-3">
+        <dt class="text-gray-500">Amount</dt>
+        <dd class="flex items-start gap-x-2">
+          <div class="font-medium text-gray-900">{{ rouletteBet.amount }}</div>
+        </dd>
+      </div>
+    </dl>
+  </li>
+</ul>

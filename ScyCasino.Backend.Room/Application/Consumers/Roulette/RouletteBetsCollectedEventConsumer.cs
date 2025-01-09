@@ -13,6 +13,6 @@ public class RouletteBetsCollectedEventConsumer(IGameStateNotificationService ga
         IEnumerable<string> rouletteRoomIds = (await roomRepository.GetAllRoomsOfType(RoomType.RouletteRoom))
             .Select(rouletteRoom => rouletteRoom.Id.ToString());
         
-        await gameStateNotificationService.NotifyGameStateUpdate(rouletteRoomIds, $"{{ \"winningNumber\": {context.Message.WinningNumber} }}");
+        await gameStateNotificationService.NotifyRoundEnd(rouletteRoomIds, $"{{ \"winningNumber\": {context.Message.WinningNumber} }}");
     }
 }

@@ -6,4 +6,5 @@ public interface IRouletteService
 {
     decimal GetBetMultiplier(RouletteBetType betType);
     bool ValidateBet(RouletteBetType betType, int[] values);
+    int GetRandomWinningNumber();
 }

@@ -1,0 +1,68 @@
+<div class="grid grid-rows-3 grid-flow-col gap-2">
+  <app-roulette-bet-button
+    class="row-span-3"
+    [betType]="RouletteBetType.Straight"
+    [betValue]="[0]"
+  />
+
+  <app-roulette-bet-button
+    *ngFor="let number of rouletteNumbers"
+    [betType]="RouletteBetType.Straight"
+    [betValue]="[number]"
+  />
+
+  <app-roulette-bet-button
+    [betType]="RouletteBetType.Column"
+    [betValue]="generateSequenceWithStep(3,36,3)"
+  />
+  <app-roulette-bet-button
+    [betType]="RouletteBetType.Column"
+    [betValue]="generateSequenceWithStep(2,35,3)"
+  />
+  <app-roulette-bet-button
+    [betType]="RouletteBetType.Column"
+    [betValue]="generateSequenceWithStep(1,34,3)"
+  />
+</div>
+
+<div class="mt-2 grid grid-cols-3 grid-flow-row gap-2">
+  <app-roulette-bet-button
+    [betType]="RouletteBetType.Dozen"
+    [betValue]="generateSequenceWithStep(1,12,1)"
+  />
+  <app-roulette-bet-button
+    [betType]="RouletteBetType.Dozen"
+    [betValue]="generateSequenceWithStep(13,24,1)"
+  />
+  <app-roulette-bet-button
+    [betType]="RouletteBetType.Dozen"
+    [betValue]="generateSequenceWithStep(25,36,1)"
+  />
+</div>
+
+<div class="mt-2 grid grid-cols-6 grid-flow-row gap-2">
+  <app-roulette-bet-button
+    [betType]="RouletteBetType.Range"
+    [betValue]="generateSequenceWithStep(1,18,1)"
+  />
+  <app-roulette-bet-button
+    [betType]="RouletteBetType.Even"
+    [betValue]="generateEvenSequence(1,36)"
+  />
+  <app-roulette-bet-button
+    [betType]="RouletteBetType.Red"
+    [betValue]="redRouletteNumbers"
+  />
+  <app-roulette-bet-button
+    [betType]="RouletteBetType.Black"
+    [betValue]="blackRouletteNumbers"
+  />
+  <app-roulette-bet-button
+    [betType]="RouletteBetType.Odd"
+    [betValue]="generateOddSequence(1,36)"
+  />
+  <app-roulette-bet-button
+    [betType]="RouletteBetType.Range"
+    [betValue]="generateSequenceWithStep(19,36,1)"
+  />
+</div>

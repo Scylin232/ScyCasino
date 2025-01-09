@@ -1,0 +1,12 @@
+<ul role="list" class="mt-4 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8">
+  <li class="relative" *ngFor="let userId of Object.keys(playerStreams); index as i">
+    <div class="aspect-w-10 aspect-h-7 rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 focus-within:ring-red-500 overflow-hidden">
+      <video [srcObject]="playerStreams[userId]" autoplay class="object-cover pointer-events-none group-hover:opacity-75"></video>
+      <button type="button" class="absolute inset-0 focus:outline-none">
+        <span class="sr-only">Nickname</span>
+      </button>
+    </div>
+    <p class="pointer-events-none mt-2 block truncate text-sm font-medium text-gray-900">Player {{ userId }}</p>
+    <p class="pointer-events-none block text-sm font-medium text-gray-500">X Coins</p>
+  </li>
+</ul>

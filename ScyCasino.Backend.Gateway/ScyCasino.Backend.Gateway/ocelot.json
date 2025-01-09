@@ -1,0 +1,55 @@
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/user/{url}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "user-service",
+          "Port": 7231
+        }
+      ],
+      "UpstreamPathTemplate": "/api/user/{url}",
+      "UpstreamHttpMethod": ["GET", "POST", "PATCH", "DELETE"]
+    },
+    {
+      "DownstreamPathTemplate": "/{everything}",
+      "DownstreamScheme": "ws",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "room-service",
+          "Port": 8231
+        }
+      ],
+      "UpstreamPathTemplate": "/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "OPTIONS" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/room/{url}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "room-service",
+          "Port": 8231
+        }
+      ],
+      "UpstreamPathTemplate": "/api/room/{url}",
+      "UpstreamHttpMethod": ["GET", "POST", "PATCH", "DELETE"]
+    },
+    {
+      "DownstreamPathTemplate": "/api/roulette/{url}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "roulette-service",
+          "Port": 9231
+        }
+      ],
+      "UpstreamPathTemplate": "/api/roulette/{url}",
+      "UpstreamHttpMethod": ["GET", "POST", "PATCH", "DELETE"]
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http://gateway:10231"
+  }
+}

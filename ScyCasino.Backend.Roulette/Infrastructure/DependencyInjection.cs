@@ -1,12 +1,10 @@
 ﻿using Application.Activities.Roulette;
 using Application.Consumers.Room;
-using Application.CQRS.Roulette.Commands.Courier;
 using Domain.Repositories;
 using Domain.Services;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
-using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -27,21 +25,19 @@ public static class DependencyInjection
         });
         serviceCollection.AddDistributedCommunication(options =>
         {
-            options.AddConsumer<PlaceRouletteBetRequestProxy>();
-            options.AddConsumer<PlaceRouletteBetResponseProxy, PlaceRouletteBetResponseProxyDefinition>();
-
             options.AddConsumer<RoomCreatedEventConsumer>();
             options.AddConsumer<RoomDeletedEventConsumer>();
-
+            
             options.AddActivity<CollectRouletteBetsActivity, CollectRouletteBetsContract, CollectRouletteBetsLog>();
             options.AddExecuteActivity<ClearRouletteGameStatesActivity, ClearRouletteGameStatesContract>();
             options.AddExecuteActivity<CreateRouletteBetActivity, CreateRouletteBetContract>();
+            options.AddExecuteActivity<UpdateRouletteGameStateActivity, UpdateRouletteGameStateContract>();
         });
         
         serviceCollection.AddScoped<IRouletteBetsRepository, RouletteBetsRepository>();
         serviceCollection.AddScoped<IRouletteGameStatesRepository, RouletteGameStatesRepository>();
         
-        serviceCollection.AddScoped<IRouletteService, RouletteService>();
+        serviceCollection.AddSingleton<IRouletteService, RouletteService>();
         
         return serviceCollection;
     }

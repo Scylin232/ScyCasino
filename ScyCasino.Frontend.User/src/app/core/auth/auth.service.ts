@@ -5,6 +5,8 @@ import { AuthConfig, OAuthEvent, OAuthService } from 'angular-oauth2-oidc';
 import { ClaimModel } from '../../shared/models/claim.model';
 
 import { environment } from '../../../environments/environment';
+import {User} from '../../shared/models/user.model';
+import {Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -44,6 +46,10 @@ export class AuthService {
 
   public get accessToken(): string {
     return this.oauthService.getAccessToken();
+  }
+
+  public get user(): Observable<User> {
+    return this.http.get<User>(`${environment.apiUrl}/api/user/self`);
   }
 
   private configureAuth(): void {

@@ -63,7 +63,13 @@ public class RouletteService : IRouletteService
     {
         return BetValidators.TryGetValue(betType, out var validator) && validator(values);
     }
-    
+
+    public int GetRandomWinningNumber()
+    {
+        Random random = new();
+        return random.Next(0, 37);
+    }
+
     private static bool IsStraight(int[] values)
     {
         return values.Length == 1 && (IsValidValues(values) || values[0] == 0);

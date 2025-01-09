@@ -1,12 +1,22 @@
 import {Component, inject, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
+import {HttpClient} from '@angular/common/http';
 
 import {RoomService} from '../../core/room/room.service';
-import {HttpClient} from '@angular/common/http';
+import {RouletteBetTableComponent} from '../../shared/components/roulette/roulette-bet-table/roulette-bet-table.component';
+import {RouletteBetListComponent} from '../../shared/components/roulette/roulette-bet-list/roulette-bet-list.component';
+import {PlayerListComponent} from '../../shared/components/player-list/player-list.component';
+import {RouletteBet} from '../../shared/models/roulette.model';
+
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'app-room-roulette',
-  imports: [],
+  imports: [
+    RouletteBetTableComponent,
+    RouletteBetListComponent,
+    PlayerListComponent,
+  ],
   templateUrl: './room-roulette.component.html',
   styleUrl: './room-roulette.component.css'
 })
@@ -14,6 +24,9 @@ export class RoomRouletteComponent implements OnInit, OnDestroy {
   private readonly route: ActivatedRoute = inject(ActivatedRoute);
   private readonly http: HttpClient = inject(HttpClient);
   private readonly roomService: RoomService = inject(RoomService);
+
+  public rouletteBets: RouletteBet[] = [];
+  public players: string[] = [];
 
   ngOnInit(): void {
     const roomId: string | null = this.route.snapshot.paramMap.get('roomId');
@@ -26,28 +39,28 @@ export class RoomRouletteComponent implements OnInit, OnDestroy {
       .startConnection()
       .subscribe((): void => {
         this.roomService.eventReceived("PlayerListUpdated").subscribe((updatedPlayerList: string): void => {
-          console.log("Updated Player List: ", updatedPlayerList);
+          this.players = updatedPlayerList as unknown as string[];
         });
 
         this.roomService.eventReceived("GameStateUpdated").subscribe((updatedGameState: string): void => {
-          console.log("Updated Game State: ", JSON.parse(updatedGameState));
+          this.rouletteBets = JSON.parse(updatedGameState) as RouletteBet[];
         });
-        
+
         this.roomService.eventReceived("RoundEnded").subscribe((roundEndInfo: string): void => {
-          console.log(roundEndInfo);
+          this.rouletteBets = [];
         });
       });
+
+    this.http.get<RouletteBet[]>(`${environment.apiUrl}/api/roulette/current-bets?roomId=${roomId}`).subscribe({
+      next: (data: RouletteBet[]): void => {
+        this.rouletteBets = data;
+      }
+    });
   }
 
   ngOnDestroy(): void {
     this.roomService
       .stopConnection()
       .subscribe();
-  }
-
-  public placeBet(): void {
-    const roomId: string | null = this.route.snapshot.paramMap.get('roomId');
-
-    this.http.post(`http://localhost:9231/api/Roulette/bet?roomId=${roomId}&amount=10&betType=0`, [0]).subscribe()
   }
 }

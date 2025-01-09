@@ -1,47 +1,54 @@
-﻿using Domain.Models;
-using Domain.Repositories;
-using MassTransit;
+﻿using MassTransit;
 using Shared.Application.Abstractions.Messaging;
 using Shared.Kernel.Core;
 using Domain.Services;
-using MassTransit.Initializers;
-using Shared.Application.Events.Roulette;
-using Shared.Kernel.Repositories;
+using MassTransit.Courier.Contracts;
+using Shared.Application.Contracts.Requests.Room;
+using Shared.Application.Contracts.Requests.Roulette;
+using Shared.Application.Contracts.Requests.User;
 
 namespace Application.CQRS.Roulette.Commands;
 
-public sealed class PlaceRouletteBetCommandHandler(IRouletteGameStatesRepository rouletteGameStatesRepository, IRouletteBetsRepository rouletteBetsRepository, IUnitOfWork unitOfWork, IRouletteService rouletteService, IRequestClient<PlaceRouletteBetCommand> requestClient, IBus bus) : ICommandHandler<PlaceRouletteBetCommand>
+public sealed class PlaceRouletteBetCommandHandler(IRouletteService rouletteService, IBus bus) : ICommandHandler<PlaceRouletteBetCommand>
 {
     public async Task<Result> Handle(PlaceRouletteBetCommand request, CancellationToken cancellationToken)
     {
-        if (!rouletteService.ValidateBet(request.BetType, request.BetValues))
-            return Result.Failure(Error.ConditionNotMet);
-        
         try
         {
-            Response<RouletteBetCreatedEvent> response = await requestClient.GetResponse<RouletteBetCreatedEvent>(request, cancellationToken);
-            RouletteGameState? gameState = await rouletteGameStatesRepository.GetById(response.Message.RoomId);
+            if (!rouletteService.ValidateBet(request.BetType, request.BetValues))
+                return Result.Failure(Error.ConditionNotMet);
             
-            if (gameState is null)
-                throw new Exception(Error.NotFound.Message);
+            RoutingSlipBuilder routingSlipBuilder = new(NewId.NextGuid());
             
-            gameState.PlacedBets.Add(response.Message.BetId);
-            await rouletteGameStatesRepository.Update(gameState);
-            await unitOfWork.SaveChangesAsync(cancellationToken);
-            
-            List<RouletteBet> placedBets = await rouletteBetsRepository.GetRouletteBetsByIds(gameState.PlacedBets);
-            
-            await bus.Publish(new RouletteGameStateUpdatedEvent
+            routingSlipBuilder.AddActivity("ValidateUserAccessTokenActivity", new Uri("queue:validate-access-token_execute"), new ValidateAccessTokenContract
             {
-                RoomId = response.Message.RoomId,
-                PlacedBets = placedBets.Select(bet => new PlacedRouletteBet
-                {
-                    UserId = bet.UserId,
-                    Amount = bet.Amount,
-                    RouletteBetType = (int)bet.BetType,
-                    BetValues = bet.BetValues
-                }).ToList()
-            }, cancellationToken);
+                Subject = request.Subject,
+                Issuer = request.Issuer
+            });
+            
+            routingSlipBuilder.AddActivity("ValidateUserRoomActivity", new Uri("queue:validate-user-room_execute"), new ValidateUserRoomContract
+            {
+                RoomId = request.RoomId
+            });
+            
+            routingSlipBuilder.AddActivity("ConsumeCoinsActivity", new Uri("queue:consume-coins_execute"), new ConsumeCoinsContract
+            {
+                Amount = request.Amount
+            });
+            
+            routingSlipBuilder.AddActivity("CreateRouletteBetActivity", new Uri("queue:create-roulette-bet_execute"), new CreateRouletteBetContract
+            {
+                BetType = (int)request.BetType,
+                BetValues = request.BetValues
+            });
+            
+            routingSlipBuilder.AddActivity("UpdateRouletteGameStateActivity", new Uri("queue:update-roulette-game-state_execute"), new UpdateRouletteGameStateContract
+            {
+                RoomId = request.RoomId
+            });
+            
+            RoutingSlip routingSlip = routingSlipBuilder.Build();
+            await bus.Execute(routingSlip, cancellationToken);
             
             return Result.Success();
         }

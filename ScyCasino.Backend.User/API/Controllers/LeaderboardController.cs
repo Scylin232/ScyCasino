@@ -6,7 +6,7 @@ using Shared.Kernel.Core;
 namespace API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/user/[controller]")]
 public class LeaderboardController(ISender sender) : ControllerBase
 {
     [HttpGet]

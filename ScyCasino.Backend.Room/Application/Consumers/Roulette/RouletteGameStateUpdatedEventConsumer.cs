@@ -9,7 +9,10 @@ public class RouletteGameStateUpdatedEventConsumer(IGameStateNotificationService
 {
     public async Task Consume(ConsumeContext<RouletteGameStateUpdatedEvent> context)
     {
-        string serializedGameState = JsonSerializer.Serialize(context.Message.PlacedBets);
+        string serializedGameState = JsonSerializer.Serialize(context.Message.PlacedBets, new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        });
         await gameStateNotificationService.NotifyGameStateUpdate(context.Message.RoomId.ToString(), serializedGameState);
     }
 }

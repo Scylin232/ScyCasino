@@ -3,7 +3,6 @@ using Domain.Repositories;
 using Domain.Services;
 using MassTransit;
 using Shared.Application.Contracts.Requests.Roulette;
-using Shared.Application.Contracts.Requests.User;
 using Shared.Application.Events.Roulette;
 using Shared.Kernel.Repositories;
 

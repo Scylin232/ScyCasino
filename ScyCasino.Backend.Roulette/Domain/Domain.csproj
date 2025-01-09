@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Shared" Version="1.0.25" />
+      <PackageReference Include="Shared" Version="1.0.26" />
     </ItemGroup>
     
 </Project>

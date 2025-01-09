@@ -198,6 +198,16 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
+  gateway:
+    build:
+      context: ./ScyCasino.Backend.Gateway/
+      dockerfile: Dockerfile
+    container_name: gateway
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:10231
+    ports:
+      - "10231:10231"
 
 volumes:
   authentik-database-volume:

@@ -15,7 +15,7 @@
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.0" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.2" />
-        <PackageReference Include="Shared" Version="1.0.25" />
+        <PackageReference Include="Shared" Version="1.0.26" />
         <PackageReference Include="StackExchange.Redis" Version="2.8.24" />
     </ItemGroup>
 
