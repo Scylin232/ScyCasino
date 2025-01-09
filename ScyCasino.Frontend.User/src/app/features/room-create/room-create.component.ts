@@ -1,7 +1,7 @@
 import {Component, inject} from '@angular/core';
-import {RouterLink} from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import {FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 
 import {RoomType} from '../../shared/models/room.model';
 
@@ -19,6 +19,7 @@ import {environment} from '../../../environments/environment';
 export class RoomCreateComponent {
   protected readonly RoomType: typeof RoomType = RoomType;
   private readonly http: HttpClient = inject(HttpClient);
+  private readonly router: Router = inject(Router);
 
   roomCreateForm = new FormGroup({
     roomName: new FormControl(''),
@@ -36,7 +37,7 @@ export class RoomCreateComponent {
       roomType
     }).subscribe({
       next: (response: any): void => {
-        console.log("Success: ", response);
+        this.router.navigate(["/rooms"]);
       }
     });
   }

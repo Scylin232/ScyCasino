@@ -71,6 +71,6 @@ export class AuthService {
   private notifyOAuthComplete(): void {
     if (!this.claims || !this.oauthService.hasValidAccessToken()) return;
 
-    this.http.post(`${environment.apiUrl}/user/oauth-complete`, null).subscribe();
+    this.http.post(`${environment.apiUrl}/api/user/oauth-complete`, null).subscribe();
   }
 }

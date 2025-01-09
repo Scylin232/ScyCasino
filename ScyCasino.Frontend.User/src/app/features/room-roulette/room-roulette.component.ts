@@ -1,12 +1,14 @@
 import {Component, inject, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
+import {Subject} from 'rxjs';
 
 import {RoomService} from '../../core/room/room.service';
 import {RouletteBetTableComponent} from '../../shared/components/roulette/roulette-bet-table/roulette-bet-table.component';
 import {RouletteBetListComponent} from '../../shared/components/roulette/roulette-bet-list/roulette-bet-list.component';
 import {PlayerListComponent} from '../../shared/components/player-list/player-list.component';
 import {RouletteBet} from '../../shared/models/roulette.model';
+import {RouletteWheelComponent} from '../../shared/components/roulette/roulette-wheel/roulette-wheel.component';
 
 import {environment} from '../../../environments/environment';
 
@@ -16,6 +18,7 @@ import {environment} from '../../../environments/environment';
     RouletteBetTableComponent,
     RouletteBetListComponent,
     PlayerListComponent,
+    RouletteWheelComponent,
   ],
   templateUrl: './room-roulette.component.html',
   styleUrl: './room-roulette.component.css'
@@ -26,6 +29,7 @@ export class RoomRouletteComponent implements OnInit, OnDestroy {
   private readonly roomService: RoomService = inject(RoomService);
 
   public rouletteBets: RouletteBet[] = [];
+  public winningNumber: Subject<number> = new Subject<number>();
   public players: string[] = [];
 
   ngOnInit(): void {
@@ -48,6 +52,7 @@ export class RoomRouletteComponent implements OnInit, OnDestroy {
 
         this.roomService.eventReceived("RoundEnded").subscribe((roundEndInfo: string): void => {
           this.rouletteBets = [];
+          this.winningNumber.next(JSON.parse(roundEndInfo).winningNumber);
         });
       });
 

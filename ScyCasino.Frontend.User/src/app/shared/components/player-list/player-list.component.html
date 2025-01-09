@@ -6,7 +6,6 @@
         <span class="sr-only">Nickname</span>
       </button>
     </div>
-    <p class="pointer-events-none mt-2 block truncate text-sm font-medium text-gray-900">Player {{ userId }}</p>
-    <p class="pointer-events-none block text-sm font-medium text-gray-500">X Coins</p>
+    <p class="pointer-events-none mt-2 block truncate text-sm font-medium text-gray-900" style="color: {{ getColorFromUserId(userId) }}">Player {{ userId }}</p>
   </li>
 </ul>

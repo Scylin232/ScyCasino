@@ -1,0 +1,31 @@
+.roulette-wheel {
+  display: flex;
+  overflow: hidden;
+  min-width: 830px;
+  border: lightgray 3px dashed;
+}
+
+.roulette-wheel div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: white;
+  border-radius: 8px;
+  border: 3px solid;
+
+  min-width: 64px;
+  min-height: 64px;
+
+  transition-duration: 2s;
+}
+
+.cursor {
+  position: absolute;
+
+  min-width: 8px !important;
+  margin-left: 28px;
+
+  background: white;
+  opacity: 40%;
+}

@@ -3,6 +3,7 @@ import {NgForOf} from '@angular/common';
 import {MediaConnection, Peer} from 'peerjs';
 import {AuthService} from '../../../core/auth/auth.service';
 import {User} from '../../models/user.model';
+import {getColorFromUserId} from '../../utils/user.utils';
 
 @Component({
   selector: 'app-player-list',
@@ -14,6 +15,8 @@ import {User} from '../../models/user.model';
 })
 export class PlayerListComponent implements OnInit, OnChanges, OnDestroy {
   @Input() players: string[] = [];
+
+  protected readonly getColorFromUserId: (userId: string) => string = getColorFromUserId;
 
   protected readonly authService: AuthService = inject(AuthService);
   protected readonly Object: ObjectConstructor = Object;

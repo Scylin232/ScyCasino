@@ -4,6 +4,7 @@ import {ActivatedRoute} from '@angular/router';
 
 import {blackRouletteNumbers, redRouletteNumbers, RouletteBetType} from '../../../models/roulette.model';
 import {environment} from '../../../../../environments/environment';
+import {getRouletteBetButtonColor, getRouletteBetButtonLabel} from '../../../utils/roulette.utils';
 
 @Component({
   selector: 'app-roulette-bet-button',
@@ -15,34 +16,11 @@ export class RouletteBetButtonComponent {
   @Input() betType!: RouletteBetType;
   @Input() betValue!: number[];
 
+  protected readonly getRouletteBetButtonColor = getRouletteBetButtonColor;
+  protected readonly getRouletteBetButtonLabel = getRouletteBetButtonLabel;
+
   private readonly route: ActivatedRoute = inject(ActivatedRoute);
   private readonly http: HttpClient = inject(HttpClient);
-
-  public getRouletteBetButtonColor(): string {
-    if (this.betType == RouletteBetType.Black || (this.betType == RouletteBetType.Straight && blackRouletteNumbers.includes(this.betValue[0])))
-      return "#41444B";
-
-    if (this.betType == RouletteBetType.Red || (this.betType == RouletteBetType.Straight && redRouletteNumbers.includes(this.betValue[0])))
-      return "#FF7457";
-
-    return "#95c361";
-  }
-
-  public getRouletteBetButtonLabel(): string {
-    switch (this.betType)
-    {
-      case RouletteBetType.Straight:
-        return this.betValue[0].toString();
-      case RouletteBetType.Column:
-        return "2to1";
-      case RouletteBetType.Range:
-        return this.betValue[0] == 1 ? "1to18" : "19to36";
-      case RouletteBetType.Dozen:
-        return this.betValue[0] == 1 ? "1st12" : this.betValue[0] == 13 ? "2nd12" : "3rd12";
-      default:
-        return RouletteBetType[this.betType];
-    }
-  }
 
   public placeBet(): void {
     const roomId: string | null = this.route.snapshot.paramMap.get('roomId');
