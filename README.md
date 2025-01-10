@@ -6,7 +6,7 @@ The project highlights the identification flow (enrollment/registration) using t
 
 The project is designed following principles of **Domain-Driven Design, Clean Architecture, CQRS**, and more.
 
-<video src="https://github.com/Scylin232/ScyCasino/blob/master/Demonstration/demonstration.mp4" width="300" />
+![Demonstration](/Demonstration/demonstration.gif)
 
 # Motivation
 
