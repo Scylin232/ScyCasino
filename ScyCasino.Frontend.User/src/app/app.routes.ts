@@ -5,6 +5,7 @@ import {RoomListComponent} from './features/room-list/room-list.component';
 import {RoomCreateComponent} from './features/room-create/room-create.component';
 import {RoomRouletteComponent} from './features/room-roulette/room-roulette.component';
 import {HomeComponent} from './features/home/home.component';
+import {authGuard} from './core/auth/auth.guard';
 
 export const routes: Routes = [
   {
@@ -21,10 +22,12 @@ export const routes: Routes = [
   },
   {
     path: "rooms/create",
-    component: RoomCreateComponent
+    component: RoomCreateComponent,
+    canActivate: [authGuard]
   },
   {
     path: "rooms/0/:roomId",
-    component: RoomRouletteComponent
+    component: RoomRouletteComponent,
+    canActivate: [authGuard]
   }
 ];

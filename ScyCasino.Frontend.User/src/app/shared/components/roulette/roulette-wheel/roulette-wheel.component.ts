@@ -1,8 +1,9 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Subject} from 'rxjs';
 import {NgForOf} from '@angular/common';
+
 import {RouletteBetType, rouletteNumbers} from '../../../models/roulette.model';
 import {getRouletteBetButtonColor} from '../../../utils/roulette.utils';
-import {Subject} from 'rxjs';
 
 @Component({
   selector: 'app-roulette-wheel',
@@ -12,7 +13,7 @@ import {Subject} from 'rxjs';
   templateUrl: './roulette-wheel.component.html',
   styleUrl: './roulette-wheel.component.css'
 })
-export class RouletteWheelComponent implements OnInit {
+export class RouletteWheelComponent implements OnInit, OnDestroy {
   @Input() winningNumber!: Subject<number>;
 
   protected readonly sortedRouletteNumbers = [0, ...rouletteNumbers.sort((a, b) => a - b)];
@@ -20,11 +21,30 @@ export class RouletteWheelComponent implements OnInit {
   protected readonly RouletteBetType = RouletteBetType;
 
   public wheelTransition: string = "";
+  public timerLabel: string = "";
+  private timerId: any = null;
 
   ngOnInit(): void {
     this.winningNumber.subscribe((winningNumber: number) => {
       this.wheelTransition = `-${winningNumber * 64}px`;
-      console.log(winningNumber);
-    })
+    });
+
+    this.updateRemainingTime();
+    this.timerId = setInterval((): void => {
+      this.updateRemainingTime();
+    }, 1000);
+  }
+
+  ngOnDestroy(): void {
+    if (!this.timerId) return;
+
+    clearInterval(this.timerId);
+  }
+
+  updateRemainingTime(): void {
+    const now = new Date();
+    const secondsToNextMinute: number = 60 - now.getSeconds();
+
+    this.timerLabel = `${secondsToNextMinute} seconds`;
   }
 }

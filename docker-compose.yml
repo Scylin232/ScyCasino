@@ -208,6 +208,14 @@ services:
       ASPNETCORE_URLS: http://+:10231
     ports:
       - "10231:10231"
+  # Frontend Services:
+  frontend:
+    build:
+      context: ./ScyCasino.Frontend.User/
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "4200:4200"
 
 volumes:
   authentik-database-volume:
